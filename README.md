@@ -1,14 +1,17 @@
-# dynamic_storage_directory
+# condora_automatic_getter_storage_directory
 
-A Flutter package that provides a clean way to handle storage directory path on both web and non-web platforms and debug and release builds.
+A Flutter package that provides an automatic and platform-aware solution for managing storage directories across web and non-web platforms, handling both debug and release environments efficiently.
 
 ## Features
 
-- Automatic platform detection (web vs non-web)
-- Different storage paths for debug and release builds
-- Debug storage in project directory for easy access during development
-- Declaration by developer of web storage directory
-- Declaration by developer of release storage directory
+- Intelligent platform-specific storage paths following best practices:
+  - iOS/macOS: Library directory (Apple guidelines)
+  - Android: Application support directory (app-private storage)
+  - Windows: AppData/Roaming with optional Local storage
+  - Linux: ~/.local/share/[app_name] (XDG spec)
+  - Web: Configurable storage directory
+- Debug mode development support with easily accessible project directory storage
+- Comprehensive error handling and validation
 - Cross-platform support (Android, iOS, Windows, macOS, Linux, Web)
 
 ## Getting started
@@ -17,22 +20,23 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  dynamic_storage_directory: ^1.0.0
+  condora_automatic_getter_storage_directory: ^1.0.0
 ```
 
 ## Usage
 
-The package provides a simple way to get the appropriate storage directory based on your platform and build mode:
+### Without Hydrated BLoC
+
 ```dart
-import 'package:dynamic_storage_directory/dynamic_storage_directory.dart';
+import 'package:condora_automatic_getter_storage_directory/condora_automatic_getter_storage_directory.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Get the storage directory
-  final storageDir = await getStorageDirectory(
+  final storageDir = await condoraAutomaticGetterStorageDirectory(
     webStorageDirectory: Directory('your_web_storage_path'),
-    releaseStorageDirectory: getApplicationSupportDirectory(), // Or any other directory
+    windowsUseLocalStorage: false, // Optional: use AppData/Local instead of Roaming
   );
 
   // Use the directory
@@ -40,17 +44,18 @@ Future<void> main() async {
 }
 ```
 
-### With Hydrated Bloc
+### With Hydrated BLoC
 
 ```dart
+import 'package:condora_automatic_getter_storage_directory/condora_automatic_getter_storage_directory.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hydrated Bloc Storage dynamically
+  // Initialize Hydrated Bloc Storage
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: await getStorageDirectory(
+    storageDirectory: await condoraAutomaticGetterStorageDirectory(
       webStorageDirectory: HydratedStorage.webStorageDirectory,
-      releaseStorageDirectory: getApplicationSupportDirectory(),
     ),
   );
 
@@ -60,17 +65,24 @@ Future<void> main() async {
 
 ## Storage Directory Behavior
 
-- Web Platform: Uses the provided webStorageDirectory
-- Debug Mode: Creates a clearly marked debug folder in your project directory
-- Release Mode: Uses the provided releaseStorageDirectory
+Platform-specific storage locations:
+
+- iOS/macOS: Library directory (follows Apple guidelines)
+- Android: Application support directory (app-private storage)
+- Windows: AppData/Roaming (configurable to Local)
+- Linux: ~/.local/share/[app_name] (follows XDG spec)
+- Web: Custom configurable directory
+- Debug Mode: Creates a clearly marked debug folder in project directory
 
 ## Additional information
 
 This package is particularly useful when:
 
-- You need different storage locations for web and native platforms
-- You want to easily access stored data during development
-- You're using packages like hydrated_bloc that require different storage handling for web
+- You're building a Flutter app for multiple platforms
+- You need platform-appropriate storage locations
+- You want development-friendly debug storage
+- You're using packages like hydrated_bloc that require web-compatible storage
+- You need to follow platform-specific storage guidelines
 
 ## Contributing
 

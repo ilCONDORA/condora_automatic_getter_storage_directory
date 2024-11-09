@@ -1,7 +1,7 @@
-name: dynamic_storage_directory
-description: "A Flutter package that provides a clean way to handle storage directory path on both web and non-web platforms and debug and release builds."
+name: condora_automatic_getter_storage_directory
+description: "A Flutter package that provides an automatic and platform-aware solution for managing storage directories across web and non-web platforms, handling both debug and release environments efficiently."
 version: 1.0.0
-homepage: https://github.com/ilCONDORA/dynamic_storage_directory
+homepage: https://github.com/ilCONDORA/condora_automatic_getter_storage_directory
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -18,6 +18,7 @@ platforms:
 dependencies:
   flutter:
     sdk: flutter
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
