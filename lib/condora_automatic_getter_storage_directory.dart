@@ -22,7 +22,8 @@ Future<Directory> _desktopDebugDirectory() async {
 ///
 /// Storage locations by platform:
 /// - iOS/macOS: Library directory (follows Apple guidelines)
-/// - Android: Application support directory (app-private storage)
+/// - Android: External storage directory if available, falls back to application 
+///   support directory if external storage is not accessible
 /// - Windows: AppData/Roaming for roaming data, AppData/Local for device-specific data
 /// - Linux: ~/.local/share/[app_name] (follows XDG spec)
 /// - Web: Requires explicit directory
@@ -59,17 +60,21 @@ Future<Directory> condoraAutomaticGetterStorageDirectory({
     }
     return webStorageDirectory;
   } else if (Platform.isAndroid) {
-    print('running on android');
-    return await getApplicationSupportDirectory();
+    final Directory? appStorageDirectory = await getExternalStorageDirectory();
+    if (appStorageDirectory == null) {
+      if (kDebugMode) {
+        print(
+            '!!! external storage not available, falling back to application support directory !!!');
+      }
+      return await getApplicationSupportDirectory();
+    }
+    return appStorageDirectory;
   } else if (Platform.isIOS || (Platform.isMacOS && !kDebugMode)) {
-    print('running on iOS/macOS');
     return await getLibraryDirectory();
   } else if ((Platform.isMacOS || Platform.isWindows || Platform.isLinux) &&
       kDebugMode) {
-    print('running on desktop in debug mode');
     return await _desktopDebugDirectory();
   } else if (Platform.isWindows) {
-    print('running on Windows');
     // If you want to support local-only data on Windows
     if (windowsUseLocalStorage) {
       return await getApplicationDocumentsDirectory();
@@ -77,10 +82,8 @@ Future<Directory> condoraAutomaticGetterStorageDirectory({
     // For data that should follow the user (default)
     return await getApplicationSupportDirectory();
   } else if (Platform.isLinux) {
-    print('running on Linux');
     return await getApplicationSupportDirectory();
   } else {
-    print('default case triggered');
     return await getApplicationSupportDirectory();
   }
 }

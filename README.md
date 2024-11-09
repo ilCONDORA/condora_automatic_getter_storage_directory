@@ -6,7 +6,7 @@ A Flutter package that provides an automatic and platform-aware solution for man
 
 - Intelligent platform-specific storage paths following best practices:
   - iOS/macOS: Library directory (Apple guidelines)
-  - Android: Application support directory (app-private storage)
+  - Android: External storage directory if available, falls back to application support directory if external storage is not accessible
   - Windows: AppData/Roaming with optional Local storage
   - Linux: ~/.local/share/[app_name] (XDG spec)
   - Web: Configurable storage directory
@@ -20,7 +20,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  condora_automatic_getter_storage_directory: ^1.0.0
+  condora_automatic_getter_storage_directory: ^1.0.1
 ```
 
 ## Usage
@@ -68,7 +68,7 @@ Future<void> main() async {
 Platform-specific storage locations:
 
 - iOS/macOS: Library directory (follows Apple guidelines)
-- Android: Application support directory (app-private storage)
+- Android: External storage directory if available, falls back to application support directory if external storage is not accessible
 - Windows: AppData/Roaming (configurable to Local)
 - Linux: ~/.local/share/[app_name] (follows XDG spec)
 - Web: Custom configurable directory

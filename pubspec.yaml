@@ -1,6 +1,6 @@
 name: condora_automatic_getter_storage_directory
 description: "A Flutter package that provides an automatic and platform-aware solution for managing storage directories across web and non-web platforms, handling both debug and release environments efficiently."
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/ilCONDORA/condora_automatic_getter_storage_directory
 
 environment:
